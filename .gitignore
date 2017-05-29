@@ -1,6 +1,8 @@
+*.swp
+
+bin/
 
 lib/root_link.cr
 lib/*.a
 lib/*.o
 
-bin/
