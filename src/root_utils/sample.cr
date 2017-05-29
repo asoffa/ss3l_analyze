@@ -1,11 +1,8 @@
 require "../config"
-require "./root"
-require "./region"
-require "./yield"
-require "./plot_config"
+require "./**"
 
 
-enum SampleType
+enum SS3LAnalyze::RootUtils::SampleType
     DATA
     MC_BKG
     FAKES
@@ -14,21 +11,29 @@ enum SampleType
 end
 
 
-class Sample
+class SS3LAnalyze::RootUtils::Sample
     PB_TO_FB = 1000.0
 
     property name        : String,
              sampleType  : SampleType,
-             dsidList    : Array(String),
+             dsidSet     : Set(String)?,
              chain       : Root::TChain,
              weightVar   : String,
              scaleFactor : Float64,
              histo       : Root::TH1D?
 
-    def initialize(@name, @sampleType, @dsidList, lumi=10.0)
-        @weightVar   = "mcEventWeight"
+    def initialize(@name, @sampleType, @dsidSet=nil, lumi=10.0)
+        @weightVar   = "eventWeight * qflipWeight * fakeWeight"
         @scaleFactor = Config::LUMI_TO_SCALE_TO / lumi
-        @chain       = Root::TChain.new "superNt", Config.rootFilePatterns(@dsidList, @sampleType)
+        @chain       = Root::TChain.new "superNt", Config.rootFilePatterns(@sampleType, @dsidSet)
+    end
+
+    def self.combine(name : String, *samples : Sample)
+        raise "Sample.initialize: must construct from at least one sample" if samples.size == 0
+        sampleType = samples[0].sampleType
+        samples.each { |s| raise "Sample.initialize: all samples must have the same `SampleType`" if s.sampleType != sampleType }
+        samples.each { |s| raise "Sample.initialize: all samples must have the same `SampleType`" if s.sampleType != sampleType }
+        Sample.new name, sampleType, samples.reduce(Set(String).new) { |x, s| x | s.dsidSet.as(Set(String)) }
     end
 
     def integralAndError(selection : String | Region) : {Float64, Float64}
@@ -50,7 +55,7 @@ class Sample
             end
 
         cmd = "#{cfg.variable} >> +#{hName}"
-        sel = "(#{cfg.region.cut}) * #{@weightVar} * #{@scaleFactor}"
+        sel = "(#{cfg.region.cut}) * (#{@weightVar}) * (#{@scaleFactor})"
         @chain.draw cmd, sel
 
         nWeighted, statErr = h.integralAndError 0, -1

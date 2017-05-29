@@ -1,10 +1,23 @@
-#require "option_parser"
+require "option_parser"
 require "../src/regions"
 require "../src/samples"
 
-# OptionParser not functional with ROOT software's PCRE version
-regionName = ARGV[0]? ? ARGV[0] : "sr"
-sampleName = ARGV[1]? ? ARGV[1] : "categories"
+private alias Regions = SS3LAnalyze::Regions
+private alias Samples = SS3LAnalyze::Samples
+
+#-------------------------------------------------------------------------------
+
+# default region, sample sets
+regionName = "vr"
+sampleName = "test"
+
+OptionParser.parse! do |parser|
+    parser.banner = "usage: printYields [-r REGION] [-s SAMPLE]"
+    parser.on("-r REGION", "--region REGION") { |r| regionName = r }
+    parser.on("-s SAMPLE", "--sample SAMPLE") { |s| sampleName = s }
+end
+
+#-------------------------------------------------------------------------------
 
 regionMap = case regionName
             when "all"
@@ -19,6 +32,8 @@ regionMap = case regionName
             end
 
 sampleMap = case sampleName
+            when "test"
+                Samples::TEST_BKG
             when "categories"
                 Samples::BKG_CATEGORIES
             when "groups"

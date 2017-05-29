@@ -1,7 +1,7 @@
 require "./root_utils/sample"
 
-module Config
-    extend self
+module SS3LAnalyze::Config
+    private alias SampleType = RootUtils::SampleType
 
     LUMI_TO_SCALE_TO = 36.47  # in GeV
 
@@ -20,7 +20,7 @@ module Config
 
     # samples
 
-    def rootFilePatterns(dsidList : Array(String), sampleType : SampleType) : Array(String)
+    def self.rootFilePatterns(sampleType : SampleType, dsidSet : Set(String)? = nil) : Array(String)
         productionDir = ENV["CURRENT_PRODUCTION_DIR"]?
         raise "`CURRENT_PRODUCTION_DIR` environment variable not set" if ! productionDir
 
@@ -41,12 +41,16 @@ module Config
 
         raise "invalid sample type: #{sampleType}" if ! subDir
 
-        patternList = [] of String
-        dsidList.each do |dsid|
-            patternList << "#{ENV["CURRENT_PRODUCTION_DIR"]}/datasets_superNt/#{subDir}/out_#{dsid}/CENTRAL_#{dsid}.root"
+        if dsidSet
+            patternList = [] of String
+            dsidSet.as(Set(String)).each do |dsid|
+                patternList << "#{productionDir}/datasets_superNt/#{subDir}/out_#{dsid}/CENTRAL_#{dsid}.root"
+            end
+
+            return patternList
         end
 
-        patternList
+        Dir["#{productionDir}/datasets_superNt/#{subDir}/out_*/CENTRAL_*.root*"]
     end
 end
 

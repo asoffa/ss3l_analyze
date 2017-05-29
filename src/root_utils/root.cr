@@ -1,4 +1,4 @@
-require "../../lib/root_link"
+require "../../../lib/root_link"
 
 lib LibRoot
     alias CChar  = LibC::Char
@@ -26,7 +26,7 @@ lib LibRoot
 end
 
 
-module Root
+module SS3LAnalyze::RootUtils::Root
     extend self
 
     def setBatch(on? : Bool)

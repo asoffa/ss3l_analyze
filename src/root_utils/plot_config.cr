@@ -1,7 +1,7 @@
-require "./region"
 require "../config"
+require "./**"
 
-class PlotConfig
+class SS3LAnalyze::RootUtils::PlotConfig
     property region         : Region,
              variable       : String,
              name           : String,

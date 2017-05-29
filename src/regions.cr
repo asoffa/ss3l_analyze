@@ -1,5 +1,5 @@
 
-module Regions
+module SS3LAnalyze::Regions
 
     def self.andNotSR(cut : String) : String
         SIGNAL_REGIONS.each do |srName, srCut|

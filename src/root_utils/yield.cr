@@ -1,7 +1,7 @@
 require "math"
 
 
-struct Yield
+struct SS3LAnalyze::RootUtils::Yield
     getter nWeighted : Float64?,
            statErr   : Float64?,
            isPercent : Bool

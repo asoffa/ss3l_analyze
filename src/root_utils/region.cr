@@ -1,5 +1,5 @@
 
-class Region
+class SS3LAnalyze::RootUtils::Region
     property name        : String,
              cut         : String,
              displayName : String,
