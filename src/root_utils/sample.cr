@@ -18,12 +18,12 @@ class SS3LAnalyze::RootUtils::Sample
              sampleType  : SampleType,
              dsidSet     : Set(String)?,
              chain       : Root::TChain,
-             weightVar   : String,
+             eventWeight : String,
              scaleFactor : Float64,
              histo       : Root::TH1D?
 
     def initialize(@name, @sampleType, @dsidSet=nil, lumi=10.0)
-        @weightVar   = "eventWeight * qflipWeight * fakeWeight"
+        @eventWeight = "mcWeight * qflipWeight * fakeWeight"
         @scaleFactor = Config::LUMI_TO_SCALE_TO / lumi
         @chain       = Root::TChain.new "superNt", Config.rootFilePatterns(@sampleType, @dsidSet)
     end
@@ -37,7 +37,7 @@ class SS3LAnalyze::RootUtils::Sample
     end
 
     def integralAndError(selection : String | Region) : {Float64, Float64}
-        @chain.integralAndError selection
+        @chain.integralAndError selection, eventWeight: @eventWeight
     end
 
     def getYield(selection : String | Region) : Yield
@@ -55,7 +55,7 @@ class SS3LAnalyze::RootUtils::Sample
             end
 
         cmd = "#{cfg.variable} >> +#{hName}"
-        sel = "(#{cfg.region.cut}) * (#{@weightVar}) * (#{@scaleFactor})"
+        sel = "(#{cfg.region.cut}) * (#{@eventWeight}) * (#{@scaleFactor})"
         @chain.draw cmd, sel
 
         nWeighted, statErr = h.integralAndError 0, -1

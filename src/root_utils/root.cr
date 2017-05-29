@@ -27,9 +27,8 @@ end
 
 
 module SS3LAnalyze::RootUtils::Root
-    extend self
 
-    def setBatch(on? : Bool)
+    def self.setBatch(on? : Bool)
         LibRoot.setBatch on?
     end
 
@@ -75,11 +74,11 @@ module SS3LAnalyze::RootUtils::Root
             LibRoot.chainGetEntries @rootChain
         end
 
-        def integralAndError(selection : String, weightVar="eventWeight", scaleFactor=Config::LUMI_TO_SCALE_TO/10.0)
+        def integralAndError(selection : String, eventWeight="1", scaleFactor=Config::LUMI_TO_SCALE_TO/10.0)
             @@nHist += 1
             hName = "h_#{@name}_#{@@nHist}"
             histo = TH1D.new hName, hName, 1, 0.0, 2.0
-            draw "1 >> #{hName}", "(#{selection}) * #{weightVar} * #{scaleFactor}"
+            draw "1 >> #{hName}", "(#{selection}) * #{eventWeight} * #{scaleFactor}"
             histo.integralAndError 0, -1
         end
 
