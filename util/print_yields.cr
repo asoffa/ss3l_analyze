@@ -12,7 +12,7 @@ regionName = "vr"
 sampleName = "test"
 
 OptionParser.parse! do |parser|
-    parser.banner = "usage: printYields [-r REGION] [-s SAMPLE]"
+    parser.banner = "usage: print_yields [-r REGION] [-s SAMPLE]"
     parser.on("-r REGION", "--region REGION") { |r| regionName = r }
     parser.on("-s SAMPLE", "--sample SAMPLE") { |s| sampleName = s }
 end
