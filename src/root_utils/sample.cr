@@ -37,7 +37,7 @@ class SS3LAnalyze::RootUtils::Sample
     end
 
     def integralAndError(selection : String | Region) : {Float64, Float64}
-        @chain.integralAndError selection, eventWeight: @eventWeight
+        @chain.integralAndError selection, @eventWeight
     end
 
     def getYield(selection : String | Region) : Yield

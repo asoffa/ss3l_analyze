@@ -74,7 +74,7 @@ module SS3LAnalyze::RootUtils::Root
             LibRoot.chainGetEntries @rootChain
         end
 
-        def integralAndError(selection : String, eventWeight="1", scaleFactor=Config::LUMI_TO_SCALE_TO/10.0)
+        def integralAndError(selection : String, eventWeight : String, scaleFactor=Config::LUMI_TO_SCALE_TO/10.0)
             @@nHist += 1
             hName = "h_#{@name}_#{@@nHist}"
             histo = TH1D.new hName, hName, 1, 0.0, 2.0
