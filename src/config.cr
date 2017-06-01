@@ -44,7 +44,7 @@ module SS3LAnalyze::Config
         if dsidSet
             patternList = [] of String
             dsidSet.as(Set(String)).each do |dsid|
-                patternList << "#{productionDir}/datasets_superNt/#{subDir}/out_#{dsid}/CENTRAL_#{dsid}.root"
+                patternList += Dir["#{productionDir}/datasets_superNt/#{subDir}/out_*#{dsid}/CENTRAL_#{dsid}.root"]
             end
 
             return patternList
