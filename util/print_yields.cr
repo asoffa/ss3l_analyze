@@ -31,27 +31,27 @@ regionMap = case regionName
                exit 1
             end
 
-sampleMap = case sampleName
-            when "test"
-                Samples::TEST_BKG
-            when "categories"
-                Samples::BKG_CATEGORIES
-            when "groups"
-                Samples::BKG_GROUPS
-            when "diboson"
-                {"diboson" => Samples::BKG_CATEGORIES["diboson"]}
-            when "ttV"
-                {"ttV" => Samples::BKG_CATEGORIES["ttV"]}
-            else
-               puts "sample not found: #{sampleName}"
-               exit 1
-            end
+samples = case sampleName
+          when "test"
+              Samples::TEST_BKG
+          when "categories"
+              Samples::BKG_CATEGORIES
+          when "groups"
+              Samples::BKG_GROUPS
+          when "diboson"
+              [Samples::DIBOSON]
+          when "ttV"
+              [Samples::TTV]
+          else
+             puts "sample set not found: #{sampleName}"
+             exit 1
+          end
 
 regionMap.each do |reg, cut|
     puts "-"*50
     puts " Yields for #{reg}:"
     puts "-"*50
-    sampleMap.each_value do |sample|
+    samples.each do |sample|
         y, err = sample.integralAndError cut
         printf "%12s : %.4f +/- %.4f\n", sample.name, y, err
     end
